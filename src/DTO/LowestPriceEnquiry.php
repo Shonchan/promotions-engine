@@ -6,6 +6,8 @@ class LowestPriceEnquiry implements PromotionEnquiryInterface
 {
     private ?int $quantity = 1;
 
+    private ?int $product_id;
+
     private ?string $requestLocation;
 
     private ?string $voucherCode;
@@ -19,6 +21,22 @@ class LowestPriceEnquiry implements PromotionEnquiryInterface
     private ?int $promotionId;
 
     private ?string $promotionName;
+
+    /**
+     * @return int|null
+     */
+    public function getProductId(): ?int
+    {
+        return $this->product_id;
+    }
+
+    /**
+     * @param int|null $product_id
+     */
+    public function setProductId(?int $product_id): void
+    {
+        $this->product_id = $product_id;
+    }
 
     /**
      * @return int|null
