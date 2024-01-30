@@ -1,5 +1,5 @@
 {
-    "name": "symfony/skeleton",
+    "name": "symfony/promotions-engine",
     "type": "project",
     "license": "MIT",
     "minimum-stability": "stable",
