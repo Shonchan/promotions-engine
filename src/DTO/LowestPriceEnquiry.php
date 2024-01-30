@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-class LowestPriceEnquiry
+class LowestPriceEnquiry implements PromotionEnquiryInterface
 {
     private ?int $quantity = 1;
 
@@ -13,6 +13,12 @@ class LowestPriceEnquiry
     private ?string $requestDate;
 
     private ?float $price;
+
+    private ?float $discountedPrice;
+
+    private ?int $promotionId;
+
+    private ?string $promotionName;
 
     /**
      * @return int|null
@@ -142,9 +148,8 @@ class LowestPriceEnquiry
         $this->promotionName = $promotionName;
     }
 
-    private ?float $discountedPrice;
-
-    private ?int $promotionId;
-
-    private ?string $promotionName;
+    public function jsonSerialize(): mixed
+    {
+        return get_object_vars($this);
+    }
 }
