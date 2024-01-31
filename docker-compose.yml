@@ -20,7 +20,7 @@ services:
       - 15432:5432
     volumes:
       - ./db/dump:/app/dump
-      - ./db/postgresql:/var/lib/postgresql/data
+      - ./db/postgresql:/var/lib/postgresql/data:rw
 
   php-fpm:
     container_name: php-skeleton
@@ -35,7 +35,7 @@ services:
       - APP_SECRET=${APP_SECRET}
       - DATABASE_URL=${DATABASE_URL}
     volumes:
-      - ./:/var/www
+      - ./:/var/www:rw
       - ./docker/php-fpm/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
     working_dir: /var/www
 #    extra_hosts:
