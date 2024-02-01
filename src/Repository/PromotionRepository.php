@@ -25,7 +25,10 @@ class PromotionRepository extends ServiceEntityRepository
     /**
      * @return Promotion[] Returns an array of Promotion objects
      */
-    public function findValidForProduct(Product $product, \DateTimeInterface $requestDate): array
+    public function findValidForProduct(
+        Product            $product,
+        \DateTimeInterface $requestDate
+    ): array
     {
         return $this->createQueryBuilder('p')
             ->innerJoin('p.productPromotions', 'pp')
@@ -34,8 +37,7 @@ class PromotionRepository extends ServiceEntityRepository
             ->setParameter('product', $product)
             ->setParameter('requestDate', $requestDate)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
 //    public function findOneBySomeField($value): ?Promotion

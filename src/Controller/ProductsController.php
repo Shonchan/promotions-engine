@@ -17,57 +17,60 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductsController extends AbstractController
 {
     public function __construct(
-        private readonly ProductRepository $repository,
+        private readonly ProductRepository      $repository,
         private readonly EntityManagerInterface $entityManager
     )
     {
     }
 
-    #[Route('/products/{id}/lowest-price', name:'lowest-price', methods: 'POST')]
+    #[Route('/products/{id}/lowest-price', name: 'lowest-price', methods: 'POST')]
     public function lowestPrice(
-        Request $request,
-        int $id,
-        DTOSerializer $serializer,
+        Request                   $request,
+        int                       $id,
+        DTOSerializer             $serializer,
         PromotionsFilterInterface $promotionsFilter
     ): Response
     {
-        if($request->headers->has('force-fail')) {
-            return  new JsonResponse(
-                ['error' => 'Promotions Engine Error'], $request->headers->get('force-fail'));
+        if ($request->headers->has('force-fail')) {
+            return new JsonResponse(
+                ['error' => 'Promotions Engine Error'],
+                $request->headers->get('force-fail')
+            );
         }
 
         /* @var LowestPriceEnquiry $lowestPriceEquiry */
         $lowestPriceEquiry = $serializer->deserialize(
-            $request->getContent(), LowestPriceEnquiry::class, 'json'
+            $request->getContent(),
+            LowestPriceEnquiry::class,
+            'json'
         );
 
         $product = $this->repository->find($id);
 
-        if(!$product) {
-            return  new JsonResponse(
+        if (!$product) {
+            return new JsonResponse(
                 ['error' => 'Product doesn`t exist'], 500);
         }
 
         $lowestPriceEquiry->setProduct($product);
 
-        $promotions = $this->entityManager->getRepository(Promotion::class)->findValidForProduct(
-            $product, date_create_immutable($lowestPriceEquiry->getRequestDate())
-        );
+        $promotions = $this->entityManager->getRepository(Promotion::class)
+            ->findValidForProduct(
+                $product,
+                date_create_immutable($lowestPriceEquiry->getRequestDate())
+            );
 
-        dd($promotions);
-
-        $modifiedEquiry = $promotionsFilter->apply($lowestPriceEquiry);
+        $modifiedEquiry = $promotionsFilter->apply($lowestPriceEquiry, ...$promotions);
 
         $responseContent = $serializer->serialize($modifiedEquiry, 'json');
 
-        return  new Response($responseContent);
+        return new Response($responseContent, 200, ['Content-Type'=>'application/json']);
     }
 
 
-
-    #[Route('/products/{id}/promotions', name:'promotions', methods: 'GET')]
+    #[Route('/products/{id}/promotions', name: 'promotions', methods: 'GET')]
     public function promotions()
     {
-        
+
     }
 }
